@@ -1,14 +1,14 @@
 {
   "org": "pythonbackport",
   "site": {
-    "title": "Python Backport Developers",
-    "tagline": "Bringing tomorrow's Python to yesterday's interpreters.",
+    "title": "Python Backport Developers™",
+    "tagline": "An organization for backporting Python's new features",
     "intro": "We are Python Backport Developers — an open-source organization dedicated to backporting the newest features, libraries and tooling of CPython into older Python versions."
   },
   "display": {
     "show_archived": false,
     "show_forks": false,
-    "exclude_repos": ["pb-website", "Entity521"],
+    "exclude_repos": ["website", ".github"],
     "max_description_chars": 220,
     "max_topics_per_card": 3
   },
@@ -17,16 +17,17 @@
       "title": "Core backports",
       "description": "Libraries that reimplement or backport features of modern CPython.",
       "keywords": [
-        "backport", "pep ", "stdlib", "immutable", "lazy import",
-        "sentinel", "froze", "hashable", "profil", "tachyon",
-        "c extension", "sampling"
+        "backport", "back-port", "back port", "pep ", "stdlib",
+        "immutable", "lazy import", "lazy imports", "sentinel",
+        "froze", "hashable", "profil", "tachyon",
+        "c extension", "sampling", "builtin"
       ],
-      "order": ["profiling", "frozendict", "lazyimports", "sentinel"]
+      "order": ["python-profiling", "python-frozendict", "python-lazyimports", "pythonbackport-sentinel"]
     },
     "community": {
       "title": "Community",
-      "description": "Discussion hubs, RFCs and meta-repositories for the org.",
-      "keywords": ["discussion", "community", "forum"],
+      "description": "Discussion hubs and meta-repositories for the org.",
+      "keywords": ["discussion", "discussions", "community", "forum"],
       "always_include_names": ["community"],
       "order": ["community"]
     },

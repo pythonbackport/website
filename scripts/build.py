@@ -39,7 +39,8 @@ API_BASE = "https://api.github.com"
 USER_AGENT = "pythonbackport-website/1.0"
 
 PLACEHOLDER_PROJECTS = "{{projects}}"
-PLACEHOLDER_SITE = "{{site_json_ld}}"
+PLACEHOLDER_TITLE = "{{site_title}}"
+PLACEHOLDER_TAGLINE = "{{site_tagline}}"
 
 
 # ---------- GitHub API ------------------------------------------------------
@@ -337,13 +338,17 @@ def assemble(site: dict, categorized: list[tuple[str, list[dict]]]) -> str:
 
     projects_html = "\n".join(b for b in section_blocks if b)
 
-    # The order of substitution matters: stats + marquee must come before
-    # {{projects}} so that any matching placeholders inside category blocks
-    # (shouldn't exist but defensive) aren't double-replaced.
+    site_block = site.get("site", {})
+    title = esc(site_block.get("title", site["org"]))
+    tagline = esc(site_block.get("tagline", ""))
+
+    # Replace all known placeholders. Order matters: title/tagline first,
+    # then {{projects}}, then optional stats/marquee.
+    tpl = tpl.replace(PLACEHOLDER_TITLE, title)
+    tpl = tpl.replace(PLACEHOLDER_TAGLINE, tagline)
     if PLACEHOLDER_PROJECTS not in tpl:
         raise SystemExit(f"Template missing placeholder {PLACEHOLDER_PROJECTS!r}")
     tpl = tpl.replace(PLACEHOLDER_PROJECTS, projects_html)
-    # Stats/marquee are inserted by separate placeholders if used.
     for ph, body in (("{{stats}}", stats_block), ("{{marquee}}", marquee_block)):
         if ph in tpl:
             tpl = tpl.replace(ph, body)
@@ -357,36 +362,11 @@ def main(argv: Iterable[str] | None = None) -> int:
                    help="Exit 1 if index.html would change (CI guard)")
     p.add_argument("--stdout", action="store_true",
                    help="Write HTML to stdout instead of index.html")
-    p.add_argument("--mock", action="store_true",
-                   help="Use scripts/_mock_repos.json instead of hitting GitHub (CI/tests)")
     args = p.parse_args(list(argv) if argv is not None else None)
 
     site = load_site()
     token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
-
-    if args.mock:
-        mock_path = ROOT / "scripts" / "_mock_repos.json"
-        raw = json.loads(mock_path.read_text(encoding="utf-8"))
-        visible = [r for r in raw if should_show(r, site)]
-        by_cat: dict[str, list[dict]] = {k: [] for k in site.get("categories", {})}
-        for r in visible:
-            cat = classify(r, site)
-            cat_cfg = site.get("categories", {}).get(cat, {})
-            if cat_cfg.get("hidden_by_default"):
-                continue
-            by_cat.setdefault(cat, []).append(r)
-        categorized: list[tuple[str, list[dict]]] = []
-        for cat_key, cat_cfg in site.get("categories", {}).items():
-            items = by_cat.get(cat_key, [])
-            items_sorted = sorted(items, key=lambda r: (
-                [(cat_cfg.get("order", []).index(r["name"]) if r["name"] in cat_cfg.get("order", []) else 999)],
-                -r.get("stargazers_count", 0),
-                r["name"].lower(),
-            ))
-            if items_sorted:
-                categorized.append((cat_key, items_sorted))
-    else:
-        categorized = build_repos(site, token)
+    categorized = build_repos(site, token)
 
     rendered = assemble(site, categorized)
 

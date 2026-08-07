@@ -21,15 +21,11 @@ GitHub API ──► scripts/build.py ──► index.html
 | `site.json` | Categories, keywords, excluded repos, copy. **Zero repo metadata.** | yes |
 | `templates/index.template.html` | Static HTML shell. Contains `{{projects}}` placeholder. | yes |
 | `scripts/build.py` | Fetches repos + renders HTML. | rarely |
-| `scripts/_mock_repos.json` | Local fixtures for `--mock` mode. Ignored by git. | n/a |
 | `index.html` | **Generated. Do not edit by hand.** | no |
 
 ## Local development
 
 ```bash
-# Render using mock data (no network, fast iteration on templates)
-python scripts/build.py --mock
-
 # Render against the live GitHub API (rate-limited to 60/h without token)
 python scripts/build.py
 
