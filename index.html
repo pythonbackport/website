@@ -3,26 +3,793 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Official Website</title>
+    <meta name="description" content="Python Backport Developers™ — An organization dedicated to backporting Python's newest features and libraries to older Python versions.">
+    <meta name="theme-color" content="#0d1117">
+    <title>Python Backport Developers™</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d1117'/%3E%3Cpath d='M30.5 12c-9 0-15 5.5-15 12.5 0 4.4 2.4 7.7 6.4 9.7l-2 6.4c-.2.7.5 1.3 1.1.9l7.4-4.7c1 .1 1.7.2 2.6.2 9 0 15-5.5 15-12.5S39.5 12 30.5 12zm-5.6 9.6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm11.2 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z' fill='%23FFD43B'/%3E%3Cpath d='M44 32v2c0 1.5-.3 2.9-.9 4.2l2.3 5.4c.2.6-.4 1.1-.9.8l-5.5-2.7C36.5 42.7 33.7 43 31 43c-1 0-1.9-.1-2.8-.3l2.3-1.5c.2 0 .4.1.5.1 6.4 0 11.3-3.5 11.3-8.7 0-.2 0-.4-.1-.6h1.8zM45.6 28c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5z' fill='%233572A5'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #0d1117;
+            --bg-soft: #161b22;
+            --bg-elevated: #1c2128;
+            --border: #30363d;
+            --border-soft: #21262d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --text-dim: #6e7681;
+            --accent: #58a6ff;
+            --accent-soft: rgba(88, 166, 255, 0.12);
+            --python-blue: #3572A5;
+            --python-yellow: #FFD43B;
+            --gradient-1: linear-gradient(135deg, #3572A5 0%, #FFD43B 100%);
+            --gradient-2: linear-gradient(135deg, #58a6ff 0%, #a371f7 100%);
+            --shadow-glow: 0 0 40px rgba(88, 166, 255, 0.15);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
         body {
-            background: #0d1117;
-            text-align: center;
-            padding-top: 120px;
-            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-        h1 {
-            color: #ffffff;
-            font-size: 42px;
-            font-family: system-ui;
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% -10%, rgba(88, 166, 255, 0.08), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 100%, rgba(163, 113, 247, 0.06), transparent);
+            pointer-events: none;
+            z-index: -1;
         }
-        p {
-            color: #8b949e;
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(88, 166, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(88, 166, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+        a:hover { color: #79c0ff; }
+        code, .mono { font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        /* ===== Nav ===== */
+        .nav {
+            position: sticky; top: 0; z-index: 100;
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            background: rgba(13, 17, 23, 0.72);
+            border-bottom: 1px solid var(--border-soft);
+        }
+        .nav-inner {
+            display: flex; align-items: center; justify-content: space-between; height: 64px;
+        }
+        .nav-brand {
+            display: flex; align-items: center; gap: 10px;
+            font-weight: 700; color: var(--text); font-size: 16px;
+        }
+        .nav-brand:hover { color: var(--text); }
+        .nav-brand .logo {
+            width: 30px; height: 30px;
+            background: var(--gradient-1);
+            border-radius: 8px;
+            display: grid; place-items: center;
             font-size: 16px;
+            box-shadow: 0 2px 10px rgba(53, 114, 165, 0.4);
+        }
+        .nav-links { display: flex; gap: 4px; list-style: none; }
+        .nav-links a {
+            color: var(--text-muted);
+            padding: 8px 14px; border-radius: 8px;
+            font-size: 14px; font-weight: 500;
+            transition: all 0.2s;
+        }
+        .nav-links a:hover { color: var(--text); background: var(--bg-soft); }
+        @media (max-width: 720px) { .nav-links { display: none; } }
+        /* ===== Hero ===== */
+        .hero { position: relative; padding: 120px 0 100px; text-align: center; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 14px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: var(--bg-soft);
+            font-size: 13px; color: var(--text-muted);
+            margin-bottom: 28px;
+            animation: fadeUp 0.6s ease;
+        }
+        .hero-badge .dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #3fb950;
+            box-shadow: 0 0 8px #3fb950;
+            animation: pulse 2s infinite;
+        }
+        h1.hero-title {
+            font-size: clamp(40px, 7vw, 76px);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+            margin-bottom: 24px;
+            animation: fadeUp 0.6s ease 0.1s both;
+        }
+        .hero-title .gradient {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+        .hero-subtitle {
+            font-size: clamp(16px, 2vw, 20px);
+            color: var(--text-muted);
+            max-width: 680px;
+            margin: 0 auto 40px;
+            animation: fadeUp 0.6s ease 0.2s both;
+        }
+        .hero-actions {
+            display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+            animation: fadeUp 0.6s ease 0.3s both;
+        }
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 22px; border-radius: 8px;
+            font-size: 15px; font-weight: 600;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+        .btn-primary { background: var(--accent); color: #0d1117; }
+        .btn-primary:hover {
+            background: #79c0ff; color: #0d1117;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(88, 166, 255, 0.3);
+        }
+        .btn-ghost { background: var(--bg-soft); color: var(--text); border-color: var(--border); }
+        .btn-ghost:hover {
+            background: var(--bg-elevated);
+            border-color: var(--text-muted);
+            transform: translateY(-1px);
+        }
+        /* Terminal */
+        .hero-terminal {
+            max-width: 720px;
+            margin: 64px auto 0;
+            background: var(--bg-soft);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-glow), 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: fadeUp 0.7s ease 0.4s both;
+            transition: transform 0.2s ease;
+        }
+        .terminal-header {
+            display: flex; align-items: center; gap: 8px;
+            padding: 12px 16px;
+            background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border);
+        }
+        .terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .terminal-dot.r { background: #ff5f57; }
+        .terminal-dot.y { background: #febc2e; }
+        .terminal-dot.g { background: #28c840; }
+        .terminal-title {
+            margin-left: 12px;
+            font-size: 12px; color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .terminal-body {
+            padding: 22px 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            text-align: left;
+        }
+        .term-prompt { color: var(--python-yellow); }
+        .term-cmd { color: var(--text); }
+        .term-comment { color: var(--text-dim); }
+        .term-key { color: var(--accent); }
+        .term-str { color: #a5d6ff; }
+        .term-out { color: var(--text-muted); }
+        /* ===== Sections ===== */
+        section { padding: 96px 0; position: relative; }
+        .section-head { text-align: center; margin-bottom: 56px; }
+        .section-eyebrow {
+            display: inline-block;
+            font-size: 13px; font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: clamp(28px, 4vw, 40px);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 14px;
+        }
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 17px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        /* ===== Mission ===== */
+        .mission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+        .mission-card {
+            padding: 28px;
+            background: var(--bg-soft);
+            border: 1px solid var(--border-soft);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        .mission-card:hover {
+            border-color: var(--border);
+            transform: translateY(-2px);
+            background: var(--bg-elevated);
+        }
+        .mission-icon {
+            width: 44px; height: 44px;
+            border-radius: 10px;
+            display: grid; place-items: center;
+            font-size: 22px;
+            margin-bottom: 16px;
+            background: var(--accent-soft);
+            border: 1px solid rgba(88, 166, 255, 0.2);
+        }
+        .mission-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+        .mission-card p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+        /* ===== Stats ===== */
+        .stats {
+            background: var(--bg-soft);
+            border-top: 1px solid var(--border-soft);
+            border-bottom: 1px solid var(--border-soft);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 32px;
+            text-align: center;
+        }
+        .stat-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(36px, 5vw, 52px);
+            font-weight: 700;
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+        .stat-label {
+            margin-top: 8px;
+            color: var(--text-muted);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        /* ===== Projects ===== */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 18px;
+        }
+        .project-card {
+            position: relative;
+            display: flex; flex-direction: column;
+            padding: 24px;
+            background: var(--bg-soft);
+            border: 1px solid var(--border-soft);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.25s;
+            overflow: hidden;
+        }
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: var(--gradient-2);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s;
+        }
+        .project-card:hover {
+            border-color: var(--border);
+            transform: translateY(-3px);
+            background: var(--bg-elevated);
+        }
+        .project-card:hover::before { transform: scaleX(1); }
+        .project-head {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 14px;
+        }
+        .project-title {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 18px; font-weight: 600;
+        }
+        .project-title .icon {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            display: grid; place-items: center;
+            font-size: 16px;
+        }
+        .project-tag {
+            font-size: 11px;
+            padding: 3px 8px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            border-radius: 999px;
+            font-weight: 600;
+            border: 1px solid rgba(88, 166, 255, 0.2);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .project-desc {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 16px;
+            flex: 1;
+        }
+        .project-meta {
+            display: flex; align-items: center; gap: 16px;
+            font-size: 12px; color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            padding-top: 14px;
+            border-top: 1px solid var(--border-soft);
+        }
+        .project-meta span { display: inline-flex; align-items: center; gap: 6px; }
+        .ic-blue { background: rgba(53, 114, 165, 0.15); color: #79b8e4; }
+        .ic-yellow { background: rgba(255, 212, 59, 0.12); color: var(--python-yellow); }
+        .ic-purple { background: rgba(163, 113, 247, 0.15); color: #a371f7; }
+        .ic-green { background: rgba(63, 185, 80, 0.15); color: #56d364; }
+        .ic-red { background: rgba(255, 123, 114, 0.15); color: #ff7b72; }
+        .ic-orange { background: rgba(255, 166, 87, 0.15); color: #ffa657; }
+        /* ===== Marquee ===== */
+        .stack-marquee {
+            overflow: hidden;
+            mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+            padding: 24px 0;
+        }
+        .stack-track {
+            display: flex; gap: 40px;
+            animation: marquee 30s linear infinite;
+            width: max-content;
+        }
+        .stack-item {
+            display: inline-flex; align-items: center; gap: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px; font-weight: 600;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .stack-item .bullet {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+        /* ===== CTA ===== */
+        .cta { text-align: center; }
+        .cta-box {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 56px 40px;
+            background: linear-gradient(135deg, rgba(88, 166, 255, 0.08), rgba(163, 113, 247, 0.08));
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-box::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(88, 166, 255, 0.15), transparent 60%);
+            pointer-events: none;
+        }
+        .cta-box h2 {
+            font-size: clamp(24px, 4vw, 36px);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 14px;
+            position: relative;
+        }
+        .cta-box p {
+            color: var(--text-muted);
+            font-size: 17px;
+            max-width: 560px;
+            margin: 0 auto 28px;
+            position: relative;
+        }
+        .cta-actions {
+            display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;
+            position: relative;
+        }
+        /* ===== Footer ===== */
+        footer {
+            padding: 48px 0 32px;
+            border-top: 1px solid var(--border-soft);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .footer-inner {
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 16px;
+        }
+        .footer-inner a:hover { color: var(--text); }
+        .footer-links { display: flex; gap: 22px; }
+        /* ===== Animations ===== */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
-    <h1>PythonBackport Team Official Website</h1>
+
+<nav class="nav">
+    <div class="container nav-inner">
+        <a href="#" class="nav-brand">
+            <span class="logo">🐍</span>
+            <span>pythonbackport</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#mission">Mission</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#stack">Stack</a></li>
+            <li><a href="#community">Community</a></li>
+            <li><a href="https://github.com/pythonbackport" target="_blank" rel="noopener">GitHub ↗</a></li>
+        </ul>
+    </div>
+</nav>
+
+<header class="hero">
+    <div class="container">
+        <div class="hero-badge">
+            <span class="dot"></span>
+            <span>Open source · Backporting Python's future</span>
+        </div>
+        <h1 class="hero-title">
+            Bringing <span class="gradient">tomorrow's Python</span><br>
+            to yesterday's interpreters.
+        </h1>
+        <p class="hero-subtitle">
+            We are <strong>Python Backport Developers™</strong> — an open-source organization dedicated
+            to backporting the newest features, libraries and tooling of CPython into older Python versions.
+        </p>
+        <div class="hero-actions">
+            <a href="#projects" class="btn btn-primary">
+                <span>Explore our projects</span>
+                <span>→</span>
+            </a>
+            <a href="https://github.com/pythonbackport" target="_blank" rel="noopener" class="btn btn-ghost">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.4 3.6 1 .1-.8.4-1.4.8-1.7-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.3-3.2-.1-.4-.6-1.6.1-3.3 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.2 2.9.1 3.3.8.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg>
+                <span>Star on GitHub</span>
+            </a>
+        </div>
+
+        <div class="hero-terminal">
+            <div class="terminal-header">
+                <span class="terminal-dot r"></span>
+                <span class="terminal-dot y"></span>
+                <span class="terminal-dot g"></span>
+                <span class="terminal-title">~/backport — zsh</span>
+            </div>
+            <div class="terminal-body">
+                <div><span class="term-prompt">$</span> <span class="term-cmd">pip install</span> <span class="term-str">python-profiling</span></div>
+                <div><span class="term-out">Successfully installed python-profiling-1.0.0</span></div>
+                <div><span class="term-prompt">$</span> <span class="term-cmd">python -m profiling.sampling run</span> <span class="term-key">--flamegraph</span> app.py</div>
+                <div><span class="term-comment"># profiling backported from Python 3.15 → works on 3.14 ✨</span></div>
+                <div><span class="term-prompt">$</span> <span class="term-cmd">cat</span> profile.html <span class="term-out">| open</span></div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="stats">
+    <div class="container">
+        <div class="stats-grid reveal">
+            <div>
+                <div class="stat-num">7+</div>
+                <div class="stat-label">Active Projects</div>
+            </div>
+            <div>
+                <div class="stat-num">3.14</div>
+                <div class="stat-label">Lowest Supported</div>
+            </div>
+            <div>
+                <div class="stat-num">100%</div>
+                <div class="stat-label">Open Source</div>
+            </div>
+            <div>
+                <div class="stat-num">∞</div>
+                <div class="stat-label">Backports &amp; Love</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="mission">
+    <div class="container">
+        <div class="section-head reveal">
+            <span class="section-eyebrow">What we do</span>
+            <h2 class="section-title">Our mission</h2>
+            <p class="section-desc">
+                Python keeps evolving — and not everyone can upgrade. We bridge that gap,
+                reimplementing new features so they run smoothly on older interpreters.
+            </p>
+        </div>
+        <div class="mission-grid">
+            <div class="mission-card reveal">
+                <div class="mission-icon">⏪</div>
+                <h3>Backport new APIs</h3>
+                <p>Reimplement newly introduced standard library modules, classes and functions so they can be used on older CPython versions without changes.</p>
+            </div>
+            <div class="mission-card reveal">
+                <div class="mission-icon">🧬</div>
+                <h3>Preserve semantics</h3>
+                <p>We aim for drop-in compatibility: same signatures, same semantics, same edge cases — so your code works identically across versions.</p>
+            </div>
+            <div class="mission-card reveal">
+                <div class="mission-icon">⚙️</div>
+                <h3>Native &amp; Pythonic</h3>
+                <p>From pure-Python helpers to C extensions backed by CPython private APIs, we choose the right tool to deliver real performance.</p>
+            </div>
+            <div class="mission-card reveal">
+                <div class="mission-icon">🤝</div>
+                <h3>Community-first</h3>
+                <p>Open discussions, transparent roadmaps, public issue triage — every contribution shapes the direction of the organization.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="projects" style="background: var(--bg-soft); border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft);">
+    <div class="container">
+        <div class="section-head reveal">
+            <span class="section-eyebrow">Repositories</span>
+            <h2 class="section-title">Featured projects</h2>
+            <p class="section-desc">A curated collection of the libraries and tools we maintain.</p>
+        </div>
+        <div class="projects-grid">
+
+            <a href="https://github.com/pythonbackport/profiling" target="_blank" rel="noopener" class="project-card reveal">
+                <div class="project-head">
+                    <div class="project-title">
+                        <span class="icon ic-blue">📊</span>
+                        <span>profiling</span>
+                    </div>
+                    <span class="project-tag">3.15 → 3.14</span>
+                </div>
+                <div class="project-desc">
+                    Deterministic tracing profiler and a low-overhead statistical sampling profiler named <strong>Tachyon</strong>, backported from CPython 3.15 to 3.14. Exports flame graphs, pstats, Gecko profiles, JSONL and more.
+                </div>
+                <div class="project-meta">
+                    <span>📈 sampling · tracing</span>
+                    <span>MIT</span>
+                </div>
+            </a>
+
+            <a href="https://github.com/pythonbackport/frozendict" target="_blank" rel="noopener" class="project-card reveal">
+                <div class="project-head">
+                    <div class="project-title">
+                        <span class="icon ic-yellow">❄️</span>
+                        <span>frozendict</span>
+                    </div>
+                    <span class="project-tag">stdlib-port</span>
+                </div>
+                <div class="project-desc">
+                    A fully hashable, immutable mapping type — the <code>frozendict</code> proposed for the standard library, available today on every supported Python version.
+                </div>
+                <div class="project-meta">
+                    <span>🧊 immutable · hashable</span>
+                    <span>MIT</span>
+                </div>
+            </a>
+
+            <a href="https://github.com/pythonbackport/lazyimports" target="_blank" rel="noopener" class="project-card reveal">
+                <div class="project-head">
+                    <div class="project-title">
+                        <span class="icon ic-purple">💤</span>
+                        <span>lazyimports</span>
+                    </div>
+                    <span class="project-tag">PEP 690</span>
+                </div>
+                <div class="project-desc">
+                    Implementation of <strong>PEP 690</strong> — Lazy Imports. Defer module imports until first use to slash startup time and memory footprint of large applications.
+                </div>
+                <div class="project-meta">
+                    <span>⚡ startup · memory</span>
+                    <span>MIT</span>
+                </div>
+            </a>
+
+            <a href="https://github.com/pythonbackport/sentinel" target="_blank" rel="noopener" class="project-card reveal">
+                <div class="project-head">
+                    <div class="project-title">
+                        <span class="icon ic-red">🚧</span>
+                        <span>sentinel</span>
+                    </div>
+                    <span class="project-tag">PEP 769</span>
+                </div>
+                <div class="project-desc">
+                    Backport of <strong>PEP 769</strong> — a standardized sentinel object for default arguments. Replace <code>None</code>, <code>object()</code> and bespoke sentinels with a clean, well-typed API.
+                </div>
+                <div class="project-meta">
+                    <span>🛡 defaults · typing</span>
+                    <span>MIT</span>
+                </div>
+            </a>
+
+            <a href="https://github.com/pythonbackport/community" target="_blank" rel="noopener" class="project-card reveal">
+                <div class="project-head">
+                    <div class="project-title">
+                        <span class="icon ic-green">💬</span>
+                        <span>community</span>
+                    </div>
+                    <span class="project-tag">discussions</span>
+                </div>
+                <div class="project-desc">
+                    The home of public discussions, Q&amp;A, roadmaps and proposals. Bring your ideas, ask questions, or help triage compatibility issues across the whole org.
+                </div>
+                <div class="project-meta">
+                    <span>🗣️ forum · RFCs</span>
+                    <span>MIT</span>
+                </div>
+            </a>
+
+            <a href="https://github.com/pythonbackport/Entity521" target="_blank" rel="noopener" class="project-card reveal">
+                <div class="project-head">
+                    <div class="project-title">
+                        <span class="icon ic-orange">🌀</span>
+                        <span>Entity 521</span>
+                    </div>
+                    <span class="project-tag">creative</span>
+                </div>
+                <div class="project-desc">
+                    A creative side-project exploring <em>the backrooms</em> through art, fiction and code. Proof that we don't just ship serious tooling.
+                </div>
+                <div class="project-meta">
+                    <span>🎨 fiction · art</span>
+                    <span>MIT</span>
+                </div>
+            </a>
+
+        </div>
+
+        <div style="text-align: center; margin-top: 36px;" class="reveal">
+            <a href="https://github.com/orgs/pythonbackport/repositories" target="_blank" rel="noopener" class="btn btn-ghost">
+                <span>View all repositories</span>
+                <span>→</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section id="stack">
+    <div class="container">
+        <div class="section-head reveal">
+            <span class="section-eyebrow">Backporting the ecosystem</span>
+            <h2 class="section-title">From PEPs to PyPI</h2>
+            <p class="section-desc">We work across the entire Python ecosystem — interpreters, compilers, libraries and tooling.</p>
+        </div>
+    </div>
+    <div class="stack-marquee">
+        <div class="stack-track">
+            <span class="stack-item"><span class="bullet"></span>PEP 690</span>
+            <span class="stack-item"><span class="bullet"></span>PEP 769</span>
+            <span class="stack-item"><span class="bullet"></span>profiling.sampling</span>
+            <span class="stack-item"><span class="bullet"></span>profiling.tracing</span>
+            <span class="stack-item"><span class="bullet"></span>Tachyon</span>
+            <span class="stack-item"><span class="bullet"></span>frozendict</span>
+            <span class="stack-item"><span class="bullet"></span>CPython 3.14</span>
+            <span class="stack-item"><span class="bullet"></span>CPython 3.15</span>
+            <span class="stack-item"><span class="bullet"></span>C Extensions</span>
+            <span class="stack-item"><span class="bullet"></span>Flame Graphs</span>
+            <span class="stack-item"><span class="bullet"></span>Remote Debugging</span>
+            <span class="stack-item"><span class="bullet"></span>PEP 690</span>
+            <span class="stack-item"><span class="bullet"></span>PEP 769</span>
+            <span class="stack-item"><span class="bullet"></span>profiling.sampling</span>
+            <span class="stack-item"><span class="bullet"></span>profiling.tracing</span>
+            <span class="stack-item"><span class="bullet"></span>Tachyon</span>
+            <span class="stack-item"><span class="bullet"></span>frozendict</span>
+            <span class="stack-item"><span class="bullet"></span>CPython 3.14</span>
+            <span class="stack-item"><span class="bullet"></span>CPython 3.15</span>
+            <span class="stack-item"><span class="bullet"></span>C Extensions</span>
+            <span class="stack-item"><span class="bullet"></span>Flame Graphs</span>
+            <span class="stack-item"><span class="bullet"></span>Remote Debugging</span>
+        </div>
+    </div>
+</section>
+
+<section id="community" class="cta">
+    <div class="container">
+        <div class="cta-box reveal">
+            <h2>Join the backport movement 🐍</h2>
+            <p>
+                Whether you're here to ship code, file an issue, suggest a PEP,
+                or just lurk — you're welcome. Every contribution helps bring
+                tomorrow's Python to yesterday's interpreters.
+            </p>
+            <div class="cta-actions">
+                <a href="https://github.com/orgs/pythonbackport/discussions" target="_blank" rel="noopener" class="btn btn-primary">
+                    <span>Join discussions</span>
+                </a>
+                <a href="https://github.com/pythonbackport" target="_blank" rel="noopener" class="btn btn-ghost">
+                    <span>Follow the org</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container footer-inner">
+        <div>
+            © <span id="year"></span> pythonbackport · Released under the MIT License.
+        </div>
+        <div class="footer-links">
+            <a href="https://github.com/pythonbackport" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://github.com/orgs/pythonbackport/discussions" target="_blank" rel="noopener">Discussions</a>
+            <a href="LICENSE">License</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+            if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                io.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+    const term = document.querySelector('.hero-terminal');
+    if (term && window.matchMedia('(pointer: fine)').matches) {
+        window.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 8;
+            const y = (e.clientY / window.innerHeight - 0.5) * 8;
+            term.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${-y}deg)`;
+        });
+    }
+</script>
+
 </body>
 </html>
