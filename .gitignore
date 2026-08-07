@@ -1,1 +1,12 @@
-# Empty now
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Mock data used only by `python scripts/build.py --mock`
+scripts/_mock_repos.json
+
+# Local dev scratch
+*.tmp
+_test_out.html

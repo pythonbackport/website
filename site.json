@@ -1,0 +1,50 @@
+{
+  "org": "pythonbackport",
+  "site": {
+    "title": "Python Backport Developers",
+    "tagline": "Bringing tomorrow's Python to yesterday's interpreters.",
+    "intro": "We are Python Backport Developers — an open-source organization dedicated to backporting the newest features, libraries and tooling of CPython into older Python versions."
+  },
+  "display": {
+    "show_archived": false,
+    "show_forks": false,
+    "exclude_repos": ["pb-website", "Entity521"],
+    "max_description_chars": 220,
+    "max_topics_per_card": 3
+  },
+  "categories": {
+    "core": {
+      "title": "Core backports",
+      "description": "Libraries that reimplement or backport features of modern CPython.",
+      "keywords": [
+        "backport", "pep ", "stdlib", "immutable", "lazy import",
+        "sentinel", "froze", "hashable", "profil", "tachyon",
+        "c extension", "sampling"
+      ],
+      "order": ["profiling", "frozendict", "lazyimports", "sentinel"]
+    },
+    "community": {
+      "title": "Community",
+      "description": "Discussion hubs, RFCs and meta-repositories for the org.",
+      "keywords": ["discussion", "community", "forum"],
+      "always_include_names": ["community"],
+      "order": ["community"]
+    },
+    "sandbox": {
+      "title": "Sandbox & experiments",
+      "description": "Experimental or side projects.",
+      "keywords": ["experiment", "sandbox", "demo", "playground"],
+      "hidden_by_default": true,
+      "order": []
+    }
+  },
+  "stats_extra": [
+    { "value": "100%", "label": "Open Source" }
+  ],
+  "marquee": {
+    "enabled": true,
+    "eyebrow": "Backporting the ecosystem",
+    "title": "From PEPs to PyPI",
+    "description": "We work across the entire Python ecosystem — interpreters, compilers, libraries and tooling."
+  }
+}
