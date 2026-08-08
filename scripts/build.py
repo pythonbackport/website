@@ -26,22 +26,17 @@ import re
 import sys
 import urllib.error
 import urllib.request
-from pathlib import Path
 from typing import Any, Iterable
 
-ROOT = Path(__file__).resolve().parent.parent
-SITE_JSON = ROOT / "site.json"
-TEMPLATE = ROOT / "templates" / "index.template.html"
-OUTPUT = ROOT / "index.html"
-
-API_BASE = "https://api.github.com"
-USER_AGENT = "pythonbackport-website/1.0"
-
-PLACEHOLDER_PROJECTS = "{{projects}}"
-PLACEHOLDER_TITLE = "{{site_title}}"
-PLACEHOLDER_TAGLINE = "{{site_tagline}}"
-
-__version__ = "0.1.2"
+from scripts._const import (API_BASE, 
+                            OUTPUT, 
+                            PLACEHOLDER_PROJECTS, 
+                            PLACEHOLDER_TAGLINE, 
+                            PLACEHOLDER_TITLE, 
+                            ROOT, 
+                            SITE_JSON, 
+                            TEMPLATE, 
+                            USER_AGENT)
 
 # ---------- GitHub API ------------------------------------------------------
 
