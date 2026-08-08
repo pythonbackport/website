@@ -26,7 +26,6 @@ import re
 import sys
 import urllib.error
 import urllib.request
-from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -42,6 +41,7 @@ PLACEHOLDER_PROJECTS = "{{projects}}"
 PLACEHOLDER_TITLE = "{{site_title}}"
 PLACEHOLDER_TAGLINE = "{{site_tagline}}"
 
+__version__ = "0.1.2"
 
 # ---------- GitHub API ------------------------------------------------------
 
