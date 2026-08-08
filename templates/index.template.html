@@ -467,8 +467,7 @@
         </a>
         <ul class="nav-links">
             <li><a href="#mission">Mission</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#stack">Stack</a></li>
+            <li><a href="#backports">Projects</a></li>
             <li><a href="#community">Community</a></li>
             <li><a href="https://github.com/pythonbackport" target="_blank" rel="noopener">GitHub ↗</a></li>
         </ul>
@@ -488,7 +487,7 @@
             {{site_tagline}}
         </p>
         <div class="hero-actions">
-            <a href="#projects" class="btn btn-primary">
+            <a href="{{hero_cta_href}}" class="btn btn-primary">
                 <span>Explore our projects</span>
                 <span>→</span>
             </a>
@@ -576,42 +575,6 @@
 
 {{projects}}
 
-<section id="stack">
-    <div class="container">
-        <div class="section-head reveal">
-            <span class="section-eyebrow">Backporting the ecosystem</span>
-            <h2 class="section-title">From PEPs to PyPI</h2>
-            <p class="section-desc">We work across the entire Python ecosystem — interpreters, compilers, libraries and tooling.</p>
-        </div>
-    </div>
-    <div class="stack-marquee">
-        <div class="stack-track">
-            <span class="stack-item"><span class="bullet"></span>PEP 690</span>
-            <span class="stack-item"><span class="bullet"></span>PEP 769</span>
-            <span class="stack-item"><span class="bullet"></span>profiling.sampling</span>
-            <span class="stack-item"><span class="bullet"></span>profiling.tracing</span>
-            <span class="stack-item"><span class="bullet"></span>Tachyon</span>
-            <span class="stack-item"><span class="bullet"></span>frozendict</span>
-            <span class="stack-item"><span class="bullet"></span>CPython 3.14</span>
-            <span class="stack-item"><span class="bullet"></span>CPython 3.15</span>
-            <span class="stack-item"><span class="bullet"></span>C Extensions</span>
-            <span class="stack-item"><span class="bullet"></span>Flame Graphs</span>
-            <span class="stack-item"><span class="bullet"></span>Remote Debugging</span>
-            <span class="stack-item"><span class="bullet"></span>PEP 690</span>
-            <span class="stack-item"><span class="bullet"></span>PEP 769</span>
-            <span class="stack-item"><span class="bullet"></span>profiling.sampling</span>
-            <span class="stack-item"><span class="bullet"></span>profiling.tracing</span>
-            <span class="stack-item"><span class="bullet"></span>Tachyon</span>
-            <span class="stack-item"><span class="bullet"></span>frozendict</span>
-            <span class="stack-item"><span class="bullet"></span>CPython 3.14</span>
-            <span class="stack-item"><span class="bullet"></span>CPython 3.15</span>
-            <span class="stack-item"><span class="bullet"></span>C Extensions</span>
-            <span class="stack-item"><span class="bullet"></span>Flame Graphs</span>
-            <span class="stack-item"><span class="bullet"></span>Remote Debugging</span>
-        </div>
-    </div>
-</section>
-
 <section id="community" class="cta">
     <div class="container">
         <div class="cta-box reveal">
@@ -622,7 +585,7 @@
                 tomorrow's Python to yesterday's interpreters.
             </p>
             <div class="cta-actions">
-                <a href="https://github.com/orgs/pythonbackport/discussions" target="_blank" rel="noopener" class="btn btn-primary">
+                <a href="{{community_url}}" target="_blank" rel="noopener" class="btn btn-primary">
                     <span>Join discussions</span>
                 </a>
                 <a href="https://github.com/pythonbackport" target="_blank" rel="noopener" class="btn btn-ghost">
@@ -640,7 +603,7 @@
         </div>
         <div class="footer-links">
             <a href="https://github.com/pythonbackport" target="_blank" rel="noopener">GitHub</a>
-            <a href="https://github.com/orgs/pythonbackport/discussions" target="_blank" rel="noopener">Discussions</a>
+            <a href="{{community_url}}" target="_blank" rel="noopener">Discussions</a>
             <a href="LICENSE">License</a>
         </div>
     </div>

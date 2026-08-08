@@ -309,7 +309,46 @@ def build_site(org: str, token: str | None) -> tuple[dict, list[tuple[str, list[
     return org_meta, ordered
 
 
-def assemble(org_meta: dict, categorized: list[tuple[str, list[dict]]]) -> str:
+def detect_community_url(org_login: str, categorized: list[tuple[str, list[dict]]], token: str | None) -> str | None:
+    """Pick the right 'community' destination.
+
+    Order of preference:
+      1. org-level GitHub Discussions is actually reachable
+         (probe by HEAD request, not by the org API field, which lags).
+      2. a repo was bucketed into 'community' -> that repo's html_url.
+      3. None (caller should drop the link).
+    """
+    disc_url = f"https://github.com/orgs/{org_login}/discussions"
+    try:
+        head = urllib.request.Request(disc_url, method="HEAD", headers={
+            "User-Agent": USER_AGENT,
+            "Accept": "text/html",
+        })
+        if token:
+            head.add_header("Authorization", f"Bearer {token}")
+        with urllib.request.urlopen(head, timeout=15) as resp:
+            # The GitHub discussions page returns 200 when enabled.
+            if resp.status == 200:
+                return disc_url
+    except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, OSError):
+        pass
+
+    for cat_key, items in categorized:
+        if cat_key == "community" and items:
+            url = items[0].get("html_url")
+            if isinstance(url, str) and url:
+                return url
+    return None
+
+
+def first_section_anchor(categorized: list[tuple[str, list[dict]]]) -> str | None:
+    """Anchor of the first category section that actually renders."""
+    for cat_key, _ in categorized:
+        return f"#{cat_key}"
+    return None
+
+
+def assemble(org_meta: dict, categorized: list[tuple[str, list[dict]]], token: str | None) -> str:
     if not TEMPLATE.exists():
         raise SystemExit(f"Missing template: {TEMPLATE}")
     tpl = TEMPLATE.read_text(encoding="utf-8")
@@ -318,20 +357,37 @@ def assemble(org_meta: dict, categorized: list[tuple[str, list[dict]]]) -> str:
 
     title = org_meta.get("name") or org_meta.get("login") or ""
     tagline = org_meta.get("description") or ""
+    org_login = org_meta.get("login") or ""
 
     section_blocks = [render_category(k, items) for k, items in categorized]
     projects_html = "\n".join(b for b in section_blocks if b)
     stats_html = render_stats(all_repos)
     marquee_html = render_marquee(all_repos)
 
+    cta_href = first_section_anchor(categorized) or "#"
+    community_url = detect_community_url(org_login, categorized, token)
+
     tpl = tpl.replace("{{site_title}}", esc(title))
     tpl = tpl.replace("{{site_tagline}}", esc(tagline))
+    tpl = tpl.replace("{{hero_cta_href}}", esc(cta_href))
+    tpl = tpl.replace("{{community_url}}", esc(community_url or ""))
     if "{{projects}}" not in tpl:
         raise SystemExit("Template missing {{projects}} placeholder")
     tpl = tpl.replace("{{projects}}", projects_html)
     for ph, body in (("{{stats}}", stats_html), ("{{marquee}}", marquee_html)):
         if ph in tpl:
             tpl = tpl.replace(ph, body)
+
+    # If there is no community destination at all, strip the placeholder
+    # anchors (left as empty href) by removing the whole CTA / footer
+    # community link if its href is empty.
+    if not community_url:
+        tpl = re.sub(
+            r'<a href="" target="_blank"[^>]*>(?:<span>)?(?:Join discussions|Discussions)(?:</span>)?</a>',
+            "",
+            tpl,
+        )
+
     return tpl
 
 
@@ -347,7 +403,7 @@ def main(argv: list[str] | None = None) -> int:
 
     token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
     org_meta, categorized = build_site(args.org, token)
-    rendered = assemble(org_meta, categorized)
+    rendered = assemble(org_meta, categorized, token)
 
     if args.stdout:
         sys.stdout.buffer.write(rendered.encode("utf-8"))
