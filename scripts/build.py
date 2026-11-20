@@ -49,6 +49,12 @@ USER_AGENT = "pythonbackport-website/1.0"
 
 DEFAULT_ORG = "pythonbackport"
 
+# The community hub lives on Discord. GitHub Discussions is disabled for this
+# org (the org-level page answers 404 and the `community` repo is archived),
+# so the invite is a constant rather than a URL probed at build time.
+DISCORD_INVITE = "https://discord.gg/kThZX7bfP"
+
+
 
 # ---------- HTTP ------------------------------------------------------------
 
@@ -230,6 +236,7 @@ def render_category(cat_key: str, repos: list[dict]) -> str:
 </section>"""
 
 
+
 def render_marquee(repos: list[dict]) -> str:
     items: list[str] = []
     for r in repos:
@@ -268,10 +275,31 @@ def render_marquee(repos: list[dict]) -> str:
 </section>"""
 
 
+def _python_versions(repos: list[dict]) -> list[str]:
+    """Collect the CPython versions the backports target.
+
+    Repos tag the version they backport in their topics, either as
+    ``python315`` or ``python3.15``. Both forms are normalised to ``3.15``.
+    """
+    versions: set[str] = set()
+    for r in repos:
+        for t in (r.get("topics") or []):
+            if not isinstance(t, str):
+                continue
+            m = re.fullmatch(r"python3\.?(\d{2})", t, re.IGNORECASE)
+            if m:
+                versions.add(f"3.{int(m.group(1))}")
+    return sorted(versions, key=lambda v: tuple(int(p) for p in v.split(".")))
+
+
 def render_stats(repos: list[dict]) -> str:
     items: list[tuple[str, str]] = []
     if repos:
-        items.append((f"{len(repos)}+", "Active Projects"))
+        items.append((f"{len(repos)}", "Projects"))
+    versions = _python_versions(repos)
+    if versions:
+        items.append((versions[-1], "Newest Backport"))
+    items.append(("100%", "Open Source"))
     if not items:
         return ""
     cells = "\n".join(
@@ -286,6 +314,7 @@ def render_stats(repos: list[dict]) -> str:
         </div>
     </div>
 </section>"""
+
 
 
 # ---------- Pipeline --------------------------------------------------------
@@ -309,38 +338,6 @@ def build_site(org: str, token: str | None) -> tuple[dict, list[tuple[str, list[
     return org_meta, ordered
 
 
-def detect_community_url(org_login: str, categorized: list[tuple[str, list[dict]]], token: str | None) -> str | None:
-    """Pick the right 'community' destination.
-
-    Order of preference:
-      1. org-level GitHub Discussions is actually reachable
-         (probe by HEAD request, not by the org API field, which lags).
-      2. a repo was bucketed into 'community' -> that repo's html_url.
-      3. None (caller should drop the link).
-    """
-    disc_url = f"https://github.com/orgs/{org_login}/discussions"
-    try:
-        head = urllib.request.Request(disc_url, method="HEAD", headers={
-            "User-Agent": USER_AGENT,
-            "Accept": "text/html",
-        })
-        if token:
-            head.add_header("Authorization", f"Bearer {token}")
-        with urllib.request.urlopen(head, timeout=15) as resp:
-            # The GitHub discussions page returns 200 when enabled.
-            if resp.status == 200:
-                return disc_url
-    except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, OSError):
-        pass
-
-    for cat_key, items in categorized:
-        if cat_key == "community" and items:
-            url = items[0].get("html_url")
-            if isinstance(url, str) and url:
-                return url
-    return None
-
-
 def first_section_anchor(categorized: list[tuple[str, list[dict]]]) -> str | None:
     """Anchor of the first category section that actually renders."""
     for cat_key, _ in categorized:
@@ -357,7 +354,6 @@ def assemble(org_meta: dict, categorized: list[tuple[str, list[dict]]], token: s
 
     title = org_meta.get("name") or org_meta.get("login") or ""
     tagline = org_meta.get("description") or ""
-    org_login = org_meta.get("login") or ""
 
     section_blocks = [render_category(k, items) for k, items in categorized]
     projects_html = "\n".join(b for b in section_blocks if b)
@@ -365,7 +361,7 @@ def assemble(org_meta: dict, categorized: list[tuple[str, list[dict]]], token: s
     marquee_html = render_marquee(all_repos)
 
     cta_href = first_section_anchor(categorized) or "#"
-    community_url = detect_community_url(org_login, categorized, token)
+    community_url = DISCORD_INVITE
 
     tpl = tpl.replace("{{site_title}}", esc(title))
     tpl = tpl.replace("{{site_tagline}}", esc(tagline))
@@ -378,12 +374,11 @@ def assemble(org_meta: dict, categorized: list[tuple[str, list[dict]]], token: s
         if ph in tpl:
             tpl = tpl.replace(ph, body)
 
-    # If there is no community destination at all, strip the placeholder
-    # anchors (left as empty href) by removing the whole CTA / footer
-    # community link if its href is empty.
+    # Safety net: if there is no community destination at all, drop the
+    # community links rather than shipping an empty href.
     if not community_url:
         tpl = re.sub(
-            r'<a href="" target="_blank"[^>]*>(?:<span>)?(?:Join discussions|Discussions)(?:</span>)?</a>',
+            r'<a href="" target="_blank"[^>]*>(?:<span>)?(?:Join the Discord|Discord)(?:</span>)?</a>',
             "",
             tpl,
         )

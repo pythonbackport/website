@@ -6,7 +6,8 @@
     <meta name="description" content="{{site_tagline}}">
     <meta name="theme-color" content="#0d1117">
     <title>{{site_title}}</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d1117'/%3E%3Cpath d='M30.5 12c-9 0-15 5.5-15 12.5 0 4.4 2.4 7.7 6.4 9.7l-2 6.4c-.2.7.5 1.3 1.1.9l7.4-4.7c1 .1 1.7.2 2.6.2 9 0 15-5.5 15-12.5S39.5 12 30.5 12zm-5.6 9.6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm11.2 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z' fill='%23FFD43B'/%3E%3Cpath d='M44 32v2c0 1.5-.3 2.9-.9 4.2l2.3 5.4c.2.6-.4 1.1-.9.8l-5.5-2.7C36.5 42.7 33.7 43 31 43c-1 0-1.9-.1-2.8-.3l2.3-1.5c.2 0 .4.1.5.1 6.4 0 11.3-3.5 11.3-8.7 0-.2 0-.4-.1-.6h1.8zM45.6 28c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5z' fill='%233572A5'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -83,12 +84,13 @@
         }
         .nav-brand:hover { color: var(--text); }
         .nav-brand .logo {
-            width: 30px; height: 30px;
-            background: var(--gradient-1);
-            border-radius: 8px;
+            width: 32px; height: 32px;
             display: grid; place-items: center;
-            font-size: 16px;
-            box-shadow: 0 2px 10px rgba(53, 114, 165, 0.4);
+        }
+        .nav-brand .logo img {
+            width: 100%; height: 100%;
+            object-fit: contain;
+            display: block;
         }
         .nav-links { display: flex; gap: 4px; list-style: none; }
         .nav-links a {
@@ -101,6 +103,14 @@
         @media (max-width: 720px) { .nav-links { display: none; } }
         /* ===== Hero ===== */
         .hero { position: relative; padding: 120px 0 100px; text-align: center; }
+        .hero-logo {
+            width: 120px; height: 108px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 28px;
+            filter: drop-shadow(0 8px 30px rgba(88, 166, 255, 0.25));
+            animation: fadeUp 0.6s ease;
+        }
         .hero-badge {
             display: inline-flex; align-items: center; gap: 8px;
             padding: 6px 14px;
@@ -462,7 +472,7 @@
 <nav class="nav">
     <div class="container nav-inner">
         <a href="#" class="nav-brand">
-            <span class="logo">🐍</span>
+            <span class="logo"><img src="logo.png" alt="pythonbackport logo" width="32" height="32"></span>
             <span>pythonbackport</span>
         </a>
         <ul class="nav-links">
@@ -476,6 +486,7 @@
 
 <header class="hero">
     <div class="container">
+        <img class="hero-logo" src="logo.png" alt="pythonbackport logo" width="120" height="108">
         <div class="hero-badge">
             <span class="dot"></span>
             <span>Open source · Backporting Python's future</span>
@@ -491,9 +502,9 @@
                 <span>Explore our projects</span>
                 <span>→</span>
             </a>
-            <a href="https://github.com/pythonbackport" target="_blank" rel="noopener" class="btn btn-ghost">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.4 3.6 1 .1-.8.4-1.4.8-1.7-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.3-3.2-.1-.4-.6-1.6.1-3.3 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.2 2.9.1 3.3.8.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg>
-                <span>Star on GitHub</span>
+            <a href="{{community_url}}" target="_blank" rel="noopener" class="btn btn-ghost">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.249a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.009c.239.18.5.308.78.416a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.876.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418Z"/></svg>
+                <span>Join the Discord</span>
             </a>
         </div>
 
@@ -505,38 +516,17 @@
                 <span class="terminal-title">~/backport — zsh</span>
             </div>
             <div class="terminal-body">
-                <div><span class="term-prompt">$</span> <span class="term-cmd">pip install</span> <span class="term-str">python-profiling</span></div>
-                <div><span class="term-out">Successfully installed python-profiling-1.0.0</span></div>
-                <div><span class="term-prompt">$</span> <span class="term-cmd">python -m profiling.sampling run</span> <span class="term-key">--flamegraph</span> app.py</div>
-                <div><span class="term-comment"># profiling backported from Python 3.15 → works on 3.14 ✨</span></div>
-                <div><span class="term-prompt">$</span> <span class="term-cmd">cat</span> profile.html <span class="term-out">| open</span></div>
+                <div><span class="term-prompt">$</span> <span class="term-cmd">pip install</span> <span class="term-str">python-lazyimports</span></div>
+                <div><span class="term-out">Successfully installed python-lazyimports-1.0.0</span></div>
+                <div><span class="term-prompt">$</span> <span class="term-cmd">python -c</span> <span class="term-key">"from lazyimports import lazy_import"</span></div>
+                <div><span class="term-comment"># lazy imports backported from Python 3.15 → works on 3.14 ✨</span></div>
+                <div><span class="term-prompt">$</span> <span class="term-cmd">cat</span> README.md <span class="term-out">| less</span></div>
             </div>
         </div>
     </div>
 </header>
 
-<section class="stats">
-    <div class="container">
-        <div class="stats-grid reveal">
-            <div>
-                <div class="stat-num">7+</div>
-                <div class="stat-label">Active Projects</div>
-            </div>
-            <div>
-                <div class="stat-num">3.14</div>
-                <div class="stat-label">Lowest Supported</div>
-            </div>
-            <div>
-                <div class="stat-num">100%</div>
-                <div class="stat-label">Open Source</div>
-            </div>
-            <div>
-                <div class="stat-num">∞</div>
-                <div class="stat-label">Backports &amp; Love</div>
-            </div>
-        </div>
-    </div>
-</section>
+{{stats}}
 
 <section id="mission">
     <div class="container">
@@ -586,7 +576,7 @@
             </p>
             <div class="cta-actions">
                 <a href="{{community_url}}" target="_blank" rel="noopener" class="btn btn-primary">
-                    <span>Join discussions</span>
+                    <span>Join the Discord</span>
                 </a>
                 <a href="https://github.com/pythonbackport" target="_blank" rel="noopener" class="btn btn-ghost">
                     <span>Follow the org</span>
@@ -603,7 +593,7 @@
         </div>
         <div class="footer-links">
             <a href="https://github.com/pythonbackport" target="_blank" rel="noopener">GitHub</a>
-            <a href="{{community_url}}" target="_blank" rel="noopener">Discussions</a>
+            <a href="{{community_url}}" target="_blank" rel="noopener">Discord</a>
             <a href="LICENSE">License</a>
         </div>
     </div>
